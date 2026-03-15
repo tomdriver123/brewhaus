@@ -5,7 +5,7 @@
   <div id="app">
     <header>
       <h1>Brewhaus</h1>
-      <p>Discover breweries near you</p>
+      <p>Discover the perfect brewery for you!</p>
     </header>
   </div>
 </template>
