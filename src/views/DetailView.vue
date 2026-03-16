@@ -5,14 +5,20 @@ import { getBrewery } from '../api'
 
 const route = useRoute()
 const brewery = ref(null)
+const loading = ref(true)
 
 onMounted(async () => {
-  brewery.value = await getBrewery(route.params.id)
+  try {
+    brewery.value = await getBrewery(route.params.id)
+  } finally {
+    loading.value = false
+  }
 })
 </script>
 
 <template>
-  <div v-if="brewery" class="detail">
+  <div v-if="loading" class="status">Loading...</div>
+  <div v-else-if="brewery" class="detail">
     <router-link to="/" class="back">← Back to list</router-link>
 
     <div class="card">
@@ -128,5 +134,11 @@ h2 {
 
 .field a:hover {
   text-decoration: underline;
+}
+
+.status {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #666;
 }
 </style>

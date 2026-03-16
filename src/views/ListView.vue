@@ -8,22 +8,38 @@ const page = ref(1)
 const perPage = 18
 const total = ref(0)
 const search = ref('')
+const breweryType = ref('')
+const loading = ref(false)
+const error = ref(null)
+
+const types = ['micro', 'nano', 'regional', 'brewpub', 'large', 'planning', 'contract', 'proprietor', 'closed']
 
 let debounceTimer = null
 
 const totalPages = computed(() => Math.ceil(total.value / perPage))
 
 async function loadBreweries() {
-  const params = { page: page.value, per_page: perPage }
+  loading.value = true
+  error.value = null
 
-  if (search.value.trim()) {
-    breweries.value = await searchBreweries(search.value.trim(), params)
-    const meta = await getBreweriesMeta({ by_name: search.value.trim() })
-    total.value = parseInt(meta.total)
-  } else {
-    breweries.value = await getBreweries(params)
-    const meta = await getBreweriesMeta()
-    total.value = parseInt(meta.total)
+  try {
+    const params = { page: page.value, per_page: perPage }
+    if (breweryType.value) params.by_type = breweryType.value
+
+    if (search.value.trim()) {
+      breweries.value = await searchBreweries(search.value.trim(), params)
+      const meta = await getBreweriesMeta({ by_name: search.value.trim(), ...params })
+      total.value = parseInt(meta.total)
+    } else {
+      breweries.value = await getBreweries(params)
+      const metaParams = breweryType.value ? { by_type: breweryType.value } : {}
+      const meta = await getBreweriesMeta(metaParams)
+      total.value = parseInt(meta.total)
+    }
+  } catch (e) {
+    error.value = 'Failed to load breweries. Please try again.'
+  } finally {
+    loading.value = false
   }
 }
 
@@ -32,6 +48,7 @@ onMounted(() => {
 })
 
 watch(page, () => {
+  window.scrollTo(0, 0)
   loadBreweries()
 })
 
@@ -45,41 +62,68 @@ watch(search, () => {
     }
   }, 350)
 })
+
+watch(breweryType, () => {
+  if (page.value !== 1) {
+    page.value = 1
+  } else {
+    loadBreweries()
+  }
+})
 </script>
 
 <template>
   <div>
-    <div class="search-bar">
-      <input
-        v-model="search"
-        type="text"
-        placeholder="Search breweries..."
-      />
-      <button v-if="search" class="clear-btn" @click="search = ''">✕</button>
+    <div class="controls">
+      <div class="search-bar">
+        <input
+          v-model="search"
+          type="text"
+          placeholder="Search breweries..."
+        />
+        <button v-if="search" class="clear-btn" @click="search = ''">✕</button>
+      </div>
+
+      <select v-model="breweryType">
+        <option value="">All types</option>
+        <option v-for="t in types" :key="t" :value="t">{{ t }}</option>
+      </select>
     </div>
 
-    <div class="grid">
-      <router-link
-        v-for="brewery in breweries"
-        :key="brewery.id"
-        :to="`/brewery/${brewery.id}`"
-      >
-        <BreweryCard :brewery="brewery" />
-      </router-link>
-    </div>
+    <div v-if="loading" class="status">Loading...</div>
+    <div v-else-if="error" class="status error">{{ error }}</div>
+    <div v-else-if="breweries.length === 0" class="status">No breweries found.</div>
 
-    <div class="pagination">
-      <button :disabled="page <= 1" @click="page--">Prev</button>
-      <span>Page {{ page }} of {{ totalPages }}</span>
-      <button :disabled="page >= totalPages" @click="page++">Next</button>
-    </div>
+    <template v-else>
+      <div class="grid">
+        <router-link
+          v-for="brewery in breweries"
+          :key="brewery.id"
+          :to="`/brewery/${brewery.id}`"
+        >
+          <BreweryCard :brewery="brewery" />
+        </router-link>
+      </div>
+
+      <div class="pagination">
+        <button :disabled="page <= 1" @click="page--">Prev</button>
+        <span>Page {{ page }} of {{ totalPages }}</span>
+        <button :disabled="page >= totalPages" @click="page++">Next</button>
+      </div>
+    </template>
   </div>
 </template>
 
 <style scoped>
+.controls {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
 .search-bar {
   position: relative;
-  margin-bottom: 1rem;
+  flex: 1;
 }
 
 .search-bar input {
@@ -111,6 +155,32 @@ watch(search, () => {
   color: #333;
 }
 
+select {
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  outline: none;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+select:focus {
+  border-color: #550000;
+}
+
+.status {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #666;
+  font-size: 1rem;
+}
+
+.status.error {
+  color: #c00;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -131,6 +201,10 @@ watch(search, () => {
 @media (max-width: 560px) {
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  .controls {
+    flex-direction: column;
   }
 }
 
