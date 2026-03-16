@@ -7,3 +7,7 @@ const api = axios.create({
 export function getBreweries(params) {
   return api.get('/breweries', { params }).then(res => res.data)
 }
+
+export function getBreweriesMeta(params) {
+  return api.get('/breweries/meta', { params }).then(res => res.data)
+}

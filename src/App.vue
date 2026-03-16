@@ -1,12 +1,27 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { getBreweries } from './api'
+import { ref, computed, watch, onMounted } from 'vue'
+import { getBreweries, getBreweriesMeta } from './api'
 import BreweryCard from './components/BreweryCard.vue'
 
 const breweries = ref([])
+const page = ref(1)
+const perPage = 12
+const total = ref(0)
+
+const totalPages = computed(() => Math.ceil(total.value / perPage))
+
+async function loadBreweries() {
+  breweries.value = await getBreweries({ page: page.value, per_page: perPage })
+}
 
 onMounted(async () => {
-  breweries.value = await getBreweries({ per_page: 12 })
+  const meta = await getBreweriesMeta()
+  total.value = parseInt(meta.total)
+  loadBreweries()
+})
+
+watch(page, () => {
+  loadBreweries()
 })
 </script>
 
@@ -24,6 +39,12 @@ onMounted(async () => {
           :key="brewery.id"
           :brewery="brewery"
         />
+      </div>
+
+      <div class="pagination">
+        <button :disabled="page <= 1" @click="page--">Prev</button>
+        <span>Page {{ page }} of {{ totalPages }}</span>
+        <button :disabled="page >= totalPages" @click="page++">Next</button>
       </div>
     </main>
   </div>
@@ -71,5 +92,36 @@ main {
   .grid {
     grid-template-columns: 1fr;
   }
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.5rem 0;
+}
+
+.pagination button {
+  padding: 0.4rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination button:not(:disabled):hover {
+  background: #f0f0f0;
+}
+
+.pagination span {
+  font-size: 0.9rem;
+  color: #333;
 }
 </style>

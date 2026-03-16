@@ -44,7 +44,7 @@ p {
   color: #fff;
   background: #820000;
   padding: 4px 8px;
-  border-radius: 3px;
+  border-radius: 4px;
   text-transform: capitalize;
 }
 </style>
