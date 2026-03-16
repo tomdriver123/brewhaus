@@ -1,10 +1,23 @@
 <script setup>
-defineProps(['brewery'])
+import { useFavorites } from '../composables/useFavorites'
+
+const props = defineProps(['brewery'])
+const { toggleFavorite, isFavorite } = useFavorites()
+
+function onFav(e) {
+  e.preventDefault()
+  toggleFavorite(props.brewery.id)
+}
 </script>
 
 <template>
   <div class="card">
-    <h3>{{ brewery.name }}</h3>
+    <div class="card-top">
+      <h3>{{ brewery.name }}</h3>
+      <button class="fav-btn" @click="onFav">
+        {{ isFavorite(brewery.id) ? '♥' : '♡' }}
+      </button>
+    </div>
     <p>{{ brewery.city }}, {{ brewery.state }}</p>
     <span class="type">{{ brewery.brewery_type }}</span>
   </div>
@@ -25,9 +38,27 @@ defineProps(['brewery'])
   transform: translateY(-2px);
 }
 
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
 h3 {
   margin: 0 0 0.3rem;
   font-size: 1.05rem;
+}
+
+.fav-btn {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: #c00;
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 p {

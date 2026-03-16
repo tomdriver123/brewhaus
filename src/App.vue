@@ -1,3 +1,9 @@
+<script setup>
+import { useFavorites } from './composables/useFavorites'
+
+const { count } = useFavorites()
+</script>
+
 <template>
   <div id="app">
     <header>
@@ -5,6 +11,7 @@
         <h1>🍺 Brewhaus</h1>
       </router-link>
       <p>Discover the perfect brewery for you!</p>
+      <span v-if="count > 0" class="fav-count">♥ {{ count }} favorite{{ count !== 1 ? 's' : '' }}</span>
     </header>
 
     <main>
@@ -35,6 +42,13 @@ header p {
   color: #aab;
   margin-top: 0.4rem;
   font-size: 1.05rem;
+}
+
+.fav-count {
+  display: inline-block;
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: #ED8E8E;
 }
 
 main {
