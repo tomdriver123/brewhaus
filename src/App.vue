@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getBreweries } from './api'
+import BreweryCard from './components/BreweryCard.vue'
 
 const breweries = ref([])
 
@@ -17,11 +18,13 @@ onMounted(async () => {
     </header>
 
     <main>
-      <ul>
-        <li v-for="brewery in breweries" :key="brewery.id">
-          {{ brewery.name }} — {{ brewery.city }}, {{ brewery.state }} · {{ brewery.brewery_type }}
-        </li>
-      </ul>
+      <div class="brewery-list">
+        <BreweryCard
+          v-for="brewery in breweries"
+          :key="brewery.id"
+          :brewery="brewery"
+        />
+      </div>
     </main>
   </div>
 </template>
@@ -48,12 +51,9 @@ main {
   padding: 0 1rem;
 }
 
-ul {
-  list-style: none;
-}
-
-li {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
+.brewery-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 </style>
