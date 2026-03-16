@@ -13,8 +13,8 @@ defineProps(['brewery'])
 <style scoped>
 .card {
   padding: 1rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
+  border: 3px solid #e0e0e0;
+  border-radius: 12px;
   background: #fff;
   cursor: pointer;
   transition: box-shadow 0.2s;
@@ -32,7 +32,7 @@ h3 {
 p {
   margin: 0;
   color: #555;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .type {
