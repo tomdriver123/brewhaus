@@ -33,9 +33,8 @@ onMounted(async () => {
 header {
   text-align: center;
   padding: 2.5rem 1rem;
-  background: #2c3e50;
+  background: #550000;
   color: #fff;
-  margin-bottom: 2rem;
 }
 
 h1 {
@@ -52,7 +51,8 @@ header p {
 main {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 1rem 2rem;
+  padding: 1rem 2rem;
+  background: #ED8E8E;
 }
 
 .grid {
