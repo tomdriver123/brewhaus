@@ -58,6 +58,7 @@ watch(search, () => {
           type="text"
           placeholder="Search breweries..."
         />
+        <button v-if="search" class="clear-btn" @click="search = ''">✕</button>
       </div>
 
       <div class="grid">
@@ -104,12 +105,13 @@ main {
 }
 
 .search-bar {
+  position: relative;
   margin-bottom: 1rem;
 }
 
 .search-bar input {
   width: 100%;
-  padding: 0.6rem 1rem;
+  padding: 0.6rem 2.5rem 0.6rem 1rem;
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -118,6 +120,22 @@ main {
 
 .search-bar input:focus {
   border-color: #550000;
+}
+
+.clear-btn {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: #999;
+  cursor: pointer;
+}
+
+.clear-btn:hover {
+  color: #333;
 }
 
 .grid {
