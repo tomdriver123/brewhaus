@@ -15,36 +15,40 @@ onMounted(async () => {
   <div v-if="brewery" class="detail">
     <router-link to="/" class="back">← Back to list</router-link>
 
-    <h2>{{ brewery.name }}</h2>
-    <span class="type">{{ brewery.brewery_type }}</span>
-
-    <div class="info">
-      <div v-if="brewery.street">
-        <strong>Address</strong>
-        <p>{{ brewery.street }}</p>
-        <p>{{ brewery.city }}, {{ brewery.state }} {{ brewery.postal_code }}</p>
+    <div class="card">
+      <div class="card-header">
+        <h2>{{ brewery.name }}</h2>
+        <span class="type">{{ brewery.brewery_type }}</span>
       </div>
 
-      <div v-if="brewery.phone">
-        <strong>Phone</strong>
-        <p>{{ brewery.phone }}</p>
-      </div>
+      <div class="fields">
+        <div v-if="brewery.street" class="field">
+          <strong>Address</strong>
+          <p>{{ brewery.street }}</p>
+          <p>{{ brewery.city }}, {{ brewery.state }} {{ brewery.postal_code }}</p>
+        </div>
 
-      <div v-if="brewery.website_url">
-        <strong>Website</strong>
-        <p><a :href="brewery.website_url" target="_blank">{{ brewery.website_url }}</a></p>
-      </div>
+        <div v-if="brewery.phone" class="field">
+          <strong>Phone</strong>
+          <p>{{ brewery.phone }}</p>
+        </div>
 
-      <div v-if="brewery.latitude && brewery.longitude">
-        <strong>Map</strong>
-        <p>
-          <a
-            :href="`https://www.google.com/maps?q=${brewery.latitude},${brewery.longitude}`"
-            target="_blank"
-          >
-            View on Google Maps
-          </a>
-        </p>
+        <div v-if="brewery.website_url" class="field">
+          <strong>Website</strong>
+          <p><a :href="brewery.website_url" target="_blank">{{ brewery.website_url }}</a></p>
+        </div>
+
+        <div v-if="brewery.latitude && brewery.longitude" class="field">
+          <strong>Map</strong>
+          <p>
+            <a
+              :href="`https://www.google.com/maps?q=${brewery.latitude},${brewery.longitude}`"
+              target="_blank"
+            >
+              View on Google Maps
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -52,18 +56,34 @@ onMounted(async () => {
 
 <style scoped>
 .detail {
-  max-width: 600px;
+  max-width: 650px;
+  margin: 0 auto;
 }
 
 .back {
   display: inline-block;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   color: #550000;
+  font-weight: 500;
   font-size: 0.9rem;
 }
 
 .back:hover {
   text-decoration: underline;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 2rem;
+  border: 3px solid #FC0000;
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #eee;
 }
 
 h2 {
@@ -73,39 +93,40 @@ h2 {
 
 .type {
   display: inline-block;
-  font-size: 0.8rem;
-  color: #666;
-  background: #f0f0f0;
-  padding: 3px 10px;
-  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #fff;
+  background: #820000;
+  padding: 4px 8px;
+  border-radius: 4px;
   text-transform: capitalize;
-  margin-bottom: 1.5rem;
 }
 
-.info {
+.fields {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
 
-.info strong {
+.field strong {
   display: block;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
-  color: #888;
+  letter-spacing: 0.5px;
+  color: #ED8E8E;
   margin-bottom: 0.2rem;
 }
 
-.info p {
+.field p {
   margin: 0;
   font-size: 0.95rem;
 }
 
-.info a {
+.field a {
   color: #550000;
 }
 
-.info a:hover {
+.field a:hover {
   text-decoration: underline;
 }
 </style>

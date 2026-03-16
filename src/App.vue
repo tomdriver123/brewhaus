@@ -38,9 +38,13 @@ header p {
 }
 
 main {
+  min-height: calc(100vh - 130px);
+  background: #ED8E8E;
+  padding: 1.5rem 2rem;
+}
+
+main > * {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 1rem 2rem;
-  background: #ED8E8E;
 }
 </style>
