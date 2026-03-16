@@ -1,27 +1,46 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
-import { getBreweries, getBreweriesMeta } from './api'
+import { getBreweries, searchBreweries, getBreweriesMeta } from './api'
 import BreweryCard from './components/BreweryCard.vue'
 
 const breweries = ref([])
 const page = ref(1)
 const perPage = 18
 const total = ref(0)
+const search = ref('')
+
+let debounceTimer = null
 
 const totalPages = computed(() => Math.ceil(total.value / perPage))
 
 async function loadBreweries() {
-  breweries.value = await getBreweries({ page: page.value, per_page: perPage })
+  const params = { page: page.value, per_page: perPage }
+
+  if (search.value.trim()) {
+    breweries.value = await searchBreweries(search.value.trim(), params)
+    const meta = await getBreweriesMeta({ by_name: search.value.trim() })
+    total.value = parseInt(meta.total)
+  } else {
+    breweries.value = await getBreweries(params)
+    const meta = await getBreweriesMeta()
+    total.value = parseInt(meta.total)
+  }
 }
 
-onMounted(async () => {
-  const meta = await getBreweriesMeta()
-  total.value = parseInt(meta.total)
+onMounted(() => {
   loadBreweries()
 })
 
 watch(page, () => {
   loadBreweries()
+})
+
+watch(search, () => {
+  clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(() => {
+    page.value = 1
+    loadBreweries()
+  }, 350)
 })
 </script>
 
@@ -33,6 +52,14 @@ watch(page, () => {
     </header>
 
     <main>
+      <div class="search-bar">
+        <input
+          v-model="search"
+          type="text"
+          placeholder="Search breweries..."
+        />
+      </div>
+
       <div class="grid">
         <BreweryCard
           v-for="brewery in breweries"
@@ -74,6 +101,23 @@ main {
   margin: 0 auto;
   padding: 1rem 2rem;
   background: #ED8E8E;
+}
+
+.search-bar {
+  margin-bottom: 1rem;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+}
+
+.search-bar input:focus {
+  border-color: #550000;
 }
 
 .grid {

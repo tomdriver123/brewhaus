@@ -8,6 +8,10 @@ export function getBreweries(params) {
   return api.get('/breweries', { params }).then(res => res.data)
 }
 
+export function searchBreweries(query, params) {
+  return api.get('/breweries/search', { params: { query, ...params } }).then(res => res.data)
+}
+
 export function getBreweriesMeta(params) {
   return api.get('/breweries/meta', { params }).then(res => res.data)
 }
