@@ -12,36 +12,38 @@ defineProps(['brewery'])
 
 <style scoped>
 .card {
-  padding: 1rem;
-  border: 3px solid #e0e0e0;
-  border-radius: 12px;
+  padding: 1.25rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   background: #fff;
   cursor: pointer;
-  transition: box-shadow 0.2s;
+  transition: box-shadow 0.2s, transform 0.2s;
 }
 
 .card:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
 }
 
 h3 {
-  margin: 0 0 0.25rem;
-  font-size: 1.1rem;
+  margin: 0 0 0.3rem;
+  font-size: 1.05rem;
 }
 
 p {
   margin: 0;
   color: #555;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
 }
 
 .type {
   display: inline-block;
   margin-top: 0.5rem;
   font-size: 0.75rem;
-  color: #888;
+  color: #666;
   background: #f0f0f0;
   padding: 2px 8px;
   border-radius: 3px;
+  text-transform: capitalize;
 }
 </style>

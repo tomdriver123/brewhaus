@@ -13,12 +13,12 @@ onMounted(async () => {
 <template>
   <div id="app">
     <header>
-      <h1>Brewhaus</h1>
+      <h1>🍺 Brewhaus</h1>
       <p>Discover the perfect brewery for you!</p>
     </header>
 
     <main>
-      <div class="brewery-list">
+      <div class="grid">
         <BreweryCard
           v-for="brewery in breweries"
           :key="brewery.id"
@@ -32,7 +32,10 @@ onMounted(async () => {
 <style scoped>
 header {
   text-align: center;
-  padding: 2rem 0;
+  padding: 2.5rem 1rem;
+  background: #2c3e50;
+  color: #fff;
+  margin-bottom: 2rem;
 }
 
 h1 {
@@ -41,19 +44,32 @@ h1 {
 }
 
 header p {
-  color: #888;
-  margin-top: 0.25rem;
+  color: #aab;
+  margin-top: 0.4rem;
+  font-size: 1.05rem;
 }
 
 main {
-  max-width: 900px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1rem 2rem;
 }
 
-.brewery-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>
