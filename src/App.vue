@@ -19,7 +19,7 @@ onMounted(async () => {
     <main>
       <ul>
         <li v-for="brewery in breweries" :key="brewery.id">
-          {{ brewery.name }} — {{ brewery.city }}, {{ brewery.state }}
+          {{ brewery.name }} — {{ brewery.city }}, {{ brewery.state }} · {{ brewery.brewery_type }}
         </li>
       </ul>
     </main>
