@@ -5,7 +5,7 @@ import BreweryCard from './components/BreweryCard.vue'
 
 const breweries = ref([])
 const page = ref(1)
-const perPage = 12
+const perPage = 18
 const total = ref(0)
 
 const totalPages = computed(() => Math.ceil(total.value / perPage))
