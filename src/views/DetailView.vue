@@ -2,10 +2,12 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { getBrewery } from '../api'
+import { useFavorites } from '../composables/useFavorites'
 
 const route = useRoute()
 const brewery = ref(null)
 const loading = ref(true)
+const { toggleFavorite, isFavorite } = useFavorites()
 
 onMounted(async () => {
   try {
@@ -25,6 +27,9 @@ onMounted(async () => {
       <div class="card-header">
         <h2>{{ brewery.name }}</h2>
         <span class="type">{{ brewery.brewery_type }}</span>
+        <button class="fav-btn" @click="toggleFavorite(brewery.id)">
+          {{ isFavorite(brewery.id) ? '♥ Favorited' : '♡ Add to favorites' }}
+        </button>
       </div>
 
       <div class="fields">
@@ -106,6 +111,18 @@ h2 {
   padding: 4px 8px;
   border-radius: 4px;
   text-transform: capitalize;
+}
+
+.fav-btn {
+  display: block;
+  margin: 0.75rem auto 0;
+  padding: 0.4rem 1.2rem;
+  border: 1px solid #c00;
+  border-radius: 4px;
+  background: #fff;
+  color: #c00;
+  font-size: 0.9rem;
+  cursor: pointer;
 }
 
 .fields {

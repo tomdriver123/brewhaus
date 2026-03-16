@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { getBreweries, searchBreweries, getBreweriesMeta } from '../api'
+import { useFavorites } from '../composables/useFavorites'
 import BreweryCard from '../components/BreweryCard.vue'
 
 const breweries = ref([])
@@ -11,12 +12,22 @@ const search = ref('')
 const breweryType = ref('')
 const loading = ref(false)
 const error = ref(null)
+const showFavsOnly = ref(false)
+
+const { favorites, isFavorite } = useFavorites()
 
 const types = ['micro', 'nano', 'regional', 'brewpub', 'large', 'planning', 'contract', 'proprietor', 'closed']
 
 let debounceTimer = null
 
 const totalPages = computed(() => Math.ceil(total.value / perPage))
+
+const displayedBreweries = computed(() => {
+  if (showFavsOnly.value) {
+    return breweries.value.filter(b => isFavorite(b.id))
+  }
+  return breweries.value
+})
 
 async function loadBreweries() {
   loading.value = true
@@ -88,6 +99,13 @@ watch(breweryType, () => {
         <option value="">All types</option>
         <option v-for="t in types" :key="t" :value="t">{{ t }}</option>
       </select>
+
+      <button
+        :class="['fav-filter', { active: showFavsOnly }]"
+        @click="showFavsOnly = !showFavsOnly"
+      >
+        ♥
+      </button>
     </div>
 
     <div v-if="loading" class="status">Loading...</div>
@@ -95,9 +113,11 @@ watch(breweryType, () => {
     <div v-else-if="breweries.length === 0" class="status">No breweries found.</div>
 
     <template v-else>
-      <div class="grid">
+      <div v-if="displayedBreweries.length === 0" class="status">No favorites on this page.</div>
+
+      <div v-else class="grid">
         <router-link
-          v-for="brewery in breweries"
+          v-for="brewery in displayedBreweries"
           :key="brewery.id"
           :to="`/brewery/${brewery.id}`"
         >
@@ -168,6 +188,22 @@ select {
 
 select:focus {
   border-color: #550000;
+}
+
+.fav-filter {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #999;
+}
+
+.fav-filter.active {
+  background: #c00;
+  color: #fff;
+  border-color: #c00;
 }
 
 .status {
