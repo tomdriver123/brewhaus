@@ -38,8 +38,11 @@ watch(page, () => {
 watch(search, () => {
   clearTimeout(debounceTimer)
   debounceTimer = setTimeout(() => {
-    page.value = 1
-    loadBreweries()
+    if (page.value !== 1) {
+      page.value = 1
+    } else {
+      loadBreweries()
+    }
   }, 350)
 })
 </script>
